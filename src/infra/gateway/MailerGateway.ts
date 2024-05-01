@@ -1,3 +1,5 @@
+// interface adapter
+
 // Driven/Resource PORT
 export interface MailerGateway {
     send(recipient: string, subject: string, content: string): Promise<void>;

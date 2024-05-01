@@ -11,3 +11,17 @@ create table cccat16.account (
 	is_passenger boolean not null default false,
 	is_driver boolean not null default false
 );
+
+create table cccat16.ride (
+	ride_id      uuid primary key,
+	passenger_id uuid not null,
+	driver_id    uuid,
+	status       text not null,
+	fare         numeric,
+	distance     numeric,
+	from_lat     numeric,
+	from_long     numeric,
+	to_lat       numeric,
+	to_long     numeric,
+	date         timestamp
+);
