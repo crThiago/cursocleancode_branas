@@ -1,0 +1,20 @@
+Aggregates:
+
+"RELACIONAMENTO entre objetos de domínios (Entities, VOs) LIDERADOS por um AGGREGATE ROOT"
+
+Account <A>
+- Account <AR> <E>
+- Name <VO>
+- Cpf <VO>
+- CarPlate <VO>
+
+Ride <A>
+- Ride <AR> <E>
+- RideStatus <VO>
+- Cood <VO>
+- Segment <VO>
+
+Position <A>
+- Position <AR> <E>
+- Coord <VO>
+- Date <VO>

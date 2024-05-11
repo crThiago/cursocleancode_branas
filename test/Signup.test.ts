@@ -3,7 +3,7 @@ import {Signup} from "../src/application/usecase/Signup";
 import {GetAccount} from "../src/application/usecase/GetAccount";
 import {MailerGatewayMemory} from "../src/infra/gateway/MailerGateway";
 import sinon from "sinon";
-import Account from "../src/domain/Account";
+import Account from "../src/domain/entity/Account";
 import {PgPromiseAdapter} from "../src/infra/database/DatabaseConnection";
 
 
@@ -118,10 +118,17 @@ test("Não deve criar uma conta para o motorista com placa inválida", async fun
 
 // stub faz uma sobreescrita do comportamento
 test("Deve criar uma conta para o passageiro com stub", async function () {
-	const input = Account.create("John Doe", `john.doe${Math.random()}@gmail.com`, "87748248800", true, false, "");
+	const input = {
+		name: "John Doe",
+		email: `john.doe${Math.random()}@gmail.com`,
+		cpf: "87748248800",
+		isPassenger: true
+	};
 	const saveAccountStub = sinon.stub(AccountRepositoryDatabase.prototype, "saveAccount").resolves();
 	const getAccountByEmailStub = sinon.stub(AccountRepositoryDatabase.prototype, "getAccountByEmail").resolves(undefined);
-	const getAccountByIdStub = sinon.stub(AccountRepositoryDatabase.prototype, "getAccountById").resolves(input); // Stub para retornar o input como resposta
+	const getAccountByIdStub = sinon.stub(AccountRepositoryDatabase.prototype, "getAccountById").resolves(
+		Account.restore("", input.name, input.email, input.cpf, true, true, "")
+	); // Stub para retornar o input como resposta
 
 	const connection = new PgPromiseAdapter();
 	const accountRepository = new AccountRepositoryDatabase(connection);
@@ -138,7 +145,7 @@ test("Deve criar uma conta para o passageiro com stub", async function () {
 	saveAccountStub.restore();
 	getAccountByEmailStub.restore();
 	getAccountByIdStub.restore();
-	connection.close()
+	await connection.close()
 });
 
 // Spy registra tudo que aconteceu com o componente que está sendo espionado, depois você faz a verificação que quiser

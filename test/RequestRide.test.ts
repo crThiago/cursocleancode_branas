@@ -5,7 +5,7 @@ import RequestRide from "../src/application/usecase/RequestRide";
 import RideRepositoryDatabase from "../src/infra/repository/RideRepository";
 import GetRide from "../src/application/usecase/GetRide";
 import {PgPromiseAdapter} from "../src/infra/database/DatabaseConnection";
-import Account from "../src/domain/Account";
+import Account from "../src/domain/entity/Account";
 
 let connection: PgPromiseAdapter;
 let accountRepository: AccountRepositoryDatabase;

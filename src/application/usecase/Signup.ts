@@ -2,7 +2,7 @@
 
 import {AccountRepository} from "../../infra/repository/AccountRepository";
 import {MailerGateway} from "../../infra/gateway/MailerGateway";
-import Account from "../../domain/Account";
+import Account from "../../domain/entity/Account";
 
 
 export class Signup {
@@ -22,7 +22,7 @@ export class Signup {
             input.carPlate
         )
         await this.accountRepository.saveAccount(account)
-        await this.mailerGateway.send(account.email, 'Welcome', 'Welcome to CCCCAT16!');
+        await this.mailerGateway.send(account.getEmail(), 'Welcome', 'Welcome to CCCCAT16!');
         return {
             accountId: account.accountId
         };

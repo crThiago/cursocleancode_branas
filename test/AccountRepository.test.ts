@@ -1,5 +1,5 @@
 import {AccountRepositoryDatabase} from "../src/infra/repository/AccountRepository";
-import Account from "../src/domain/Account";
+import Account from "../src/domain/entity/Account";
 import {PgPromiseAdapter} from "../src/infra/database/DatabaseConnection";
 
 let account: Account;
@@ -27,16 +27,16 @@ test("Deve salvar um registro na tabela account e consultar por id", async funct
 	await accountRepository.saveAccount(account);
 	const savedAccount = await accountRepository.getAccountById(account.accountId);
 	expect(savedAccount.accountId).toBe(account.accountId);
-	expect(savedAccount.name).toBe(account.name);
-	expect(savedAccount.email).toBe(account.email);
-	expect(savedAccount.cpf).toBe(account.cpf);
+	expect(savedAccount.getName()).toBe(account.getName());
+	expect(savedAccount.getEmail()).toBe(account.getEmail());
+	expect(savedAccount.getCpf()).toBe(account.getCpf());
 });
 
 test("Deve salvar um registro na tabela account e consultar por email", async function () {
 	await accountRepository.saveAccount(account);
-	const savedAccount = await accountRepository.getAccountByEmail(account.email);
+	const savedAccount = await accountRepository.getAccountByEmail(account.getEmail());
 	expect(savedAccount?.accountId).toBe(account.accountId);
-	expect(savedAccount?.name).toBe(account.name);
-	expect(savedAccount?.email).toBe(account.email);
-	expect(savedAccount?.cpf).toBe(account.cpf);
+	expect(savedAccount?.getName()).toBe(account.getName());
+	expect(savedAccount?.getEmail()).toBe(account.getEmail());
+	expect(savedAccount?.getCpf()).toBe(account.getCpf());
 });
