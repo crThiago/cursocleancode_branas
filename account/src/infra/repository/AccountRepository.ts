@@ -2,9 +2,10 @@
 
 import Account from "../../domain/entity/Account";
 import DatabaseConnection from "../database/DatabaseConnection";
+import {AccountRepositorySignup} from "../../application/usecase/Signup";
 
 // Driven/Resource PORT
-export interface AccountRepository {
+export interface AccountRepository extends AccountRepositorySignup {
     getAccountByEmail(email: string): Promise<Account | undefined>;
     getAccountById(accountId: string): Promise<Account>;
     saveAccount(account: Account): Promise<any>;

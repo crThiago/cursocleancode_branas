@@ -1,8 +1,6 @@
 // Use Case
 
-import {AccountRepository} from "../../infra/repository/AccountRepository";
 import {RideRepository} from "../../infra/repository/RideRepository";
-import Ride from "../../domain/entity/Ride";
 
 export default class StartRide {
 

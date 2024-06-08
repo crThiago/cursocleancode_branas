@@ -1,20 +1,22 @@
-import {AccountRepositoryDatabase, AccountRepositoryMemory} from "../src/infra/repository/AccountRepository";
-import {MailerGatewayMemory} from "../src/infra/gateway/MailerGateway";
-import {Signup} from "../src/application/usecase/Signup";
 import RequestRide from "../src/application/usecase/RequestRide";
 import RideRepositoryDatabase from "../src/infra/repository/RideRepository";
 import GetRide from "../src/application/usecase/GetRide";
 import {PgPromiseAdapter} from "../src/infra/database/DatabaseConnection";
-import Account from "../src/domain/entity/Account";
+import AccountGatewaryHttp from "../src/infra/gateway/AccountGatewaryHttp";
+import AccountGateway from "../src/application/gateway/AccountGateway";
+import HttpClient, {AxiosAdapter} from "../src/infra/http/HttpClient";
 
 let connection: PgPromiseAdapter;
-let accountRepository: AccountRepositoryDatabase;
 let rideRepository: RideRepositoryDatabase;
+let axiosAdapter: HttpClient;
+let accountGateway: AccountGateway;
 
 beforeEach(async () => {
     connection = new PgPromiseAdapter();
-    accountRepository = new AccountRepositoryDatabase(connection);
     rideRepository = new RideRepositoryDatabase(connection);
+
+    axiosAdapter = new AxiosAdapter();
+    accountGateway = new AccountGatewaryHttp(axiosAdapter);
 });
 
 afterEach(async () => {
@@ -22,16 +24,14 @@ afterEach(async () => {
 })
 
 test("Deve solicitar uma corrida", async function () {
-    const mailGateway = new MailerGatewayMemory();
-    const signup = new Signup(accountRepository, mailGateway);
     const inputSignup = {
         name: "John Doe",
         email: `john.doe${Math.random()}@gmail.com`,
         cpf: "87748248800",
         isPassenger: true
     };
-    const outputSignup = await signup.execute(inputSignup);
-    const requestRide = new RequestRide(accountRepository, rideRepository);
+    const outputSignup = await accountGateway.signup(inputSignup)
+    const requestRide = new RequestRide(rideRepository, accountGateway);
     const inputRequestRide = {
         passengerId: outputSignup.accountId,
         fromLat: -27.584905257808835,
@@ -41,7 +41,7 @@ test("Deve solicitar uma corrida", async function () {
     }
     const outputRideRequest = await requestRide.execute(inputRequestRide);
     expect(outputRideRequest.rideId).toBeDefined();
-    const getRide = new GetRide(accountRepository, rideRepository);
+    const getRide = new GetRide(rideRepository, accountGateway);
     const inputGetRide = {
         rideId: outputRideRequest.rideId
     }
@@ -58,16 +58,14 @@ test("Deve solicitar uma corrida", async function () {
 });
 
 test("Não deve poder solicitar uma corrida se não for um passageiro", async function () {
-    const mailGateway = new MailerGatewayMemory();
-    const signup = new Signup(accountRepository, mailGateway);
     const inputSignup = {
         name: "John Doe",
         email: `john.doe${Math.random()}@gmail.com`,
         cpf: "87748248800",
         isDriver: true
     };
-    const outputSignup = await signup.execute(inputSignup);
-    const requestRide = new RequestRide(accountRepository, rideRepository);
+    const outputSignup = await accountGateway.signup(inputSignup)
+    const requestRide = new RequestRide(rideRepository, accountGateway);
     const inputRequestRide = {
         passengerId: outputSignup.accountId,
         fromLat: -27.584905257808835,
@@ -79,16 +77,14 @@ test("Não deve poder solicitar uma corrida se não for um passageiro", async fu
 });
 
 test("Deve solicitar uma corrida", async function () {
-    const mailGateway = new MailerGatewayMemory();
-    const signup = new Signup(accountRepository, mailGateway);
     const inputSignup = {
         name: "John Doe",
         email: `john.doe${Math.random()}@gmail.com`,
         cpf: "87748248800",
         isPassenger: true
     };
-    const outputSignup = await signup.execute(inputSignup);
-    const requestRide = new RequestRide(accountRepository, rideRepository);
+    const outputSignup = await accountGateway.signup(inputSignup)
+    const requestRide = new RequestRide(rideRepository, accountGateway);
     const inputRequestRide = {
         passengerId: outputSignup.accountId,
         fromLat: -27.584905257808835,
