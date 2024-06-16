@@ -1,7 +1,5 @@
 // Entity
 import Coord from "../vo/Coord";
-import Segment from "../vo/Segment";
-import RideStatus, {RideStatusFactory} from "../vo/RideStatus";
 
 export default class Position {
     private constructor(

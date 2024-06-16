@@ -6,6 +6,7 @@ import AcceptRide from "../src/application/usecase/AcceptRide";
 import AccountGateway from "../src/application/gateway/AccountGateway";
 import HttpClient, {FetchAdapter} from "../src/infra/http/HttpClient";
 import AccountGatewaryHttp from "../src/infra/gateway/AccountGatewaryHttp";
+import GetRideQuery from "../src/application/query/GetRideQuery";
 
 let connection: PgPromiseAdapter;
 let rideRepository: RideRepositoryDatabase;
@@ -58,11 +59,12 @@ test("Deve aceitar uma corrida", async function () {
     };
     await acceptRide.execute(inputAcceptRide);
 
-    const getRide = new GetRide(rideRepository, accountGateway);
+    // const getRide = new GetRide(rideRepository, accountGateway);
+    const getRide = new GetRideQuery(connection)
     const inputGetRide = {
         rideId: outputRequestRide.rideId
     };
-    const outputGetRide = await getRide.execute(inputGetRide);
+    const outputGetRide = await getRide.execute(inputGetRide.rideId);
     expect(outputGetRide.rideId).toBe(outputRequestRide.rideId);
     expect(outputGetRide.status).toBe("accepted");
     expect(outputGetRide.driverName).toBe("John Doe");
